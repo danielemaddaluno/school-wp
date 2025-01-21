@@ -1,9 +1,8 @@
 <?php
-$host = 'db'; // service name from docker-compose.yml
-
-$user = 'root';
-$password = 'password';
-$db = 'site1';
+$host       = 'db'; // service name from docker-compose.yml
+$user       = 'root';
+$password   = 'password';
+$db         = 'site1';
 
 echo "Connection test:";
 echo "<br>";

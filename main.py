@@ -60,8 +60,8 @@ def setup_sites(num_sites, wordpress_source, htdocs_path):
             with open(config_file, "r") as file:
                 config_content = file.read()
             #config_content = config_content.replace("localhost", "db")
-            config_content = config_content.replace("localhost", "localhost:8002")
-            config_content = config_content.replace("username_here", "admin")
+            config_content = config_content.replace("localhost", "db")
+            config_content = config_content.replace("username_here", "root")
             config_content = config_content.replace("password_here", "password")
             config_content = config_content.replace("database_name_here", f"site{i}")
             with open(config_file, "w") as file:
