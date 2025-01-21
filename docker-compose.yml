@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  # The apache server
+  web:
+    image: webdevops/php-apache:alpine-php7
+    ports:
+      # Maps the internal port 80 to localhost:8000
+      - 8000:80
+    volumes:
+      # The local folder "htdocs" serves php pages
+      - ./htdocs:/app
+
+  # The MariaDB database
+  db:
+    image: mariadb:10.5
+    restart: always
+    volumes:
+      # The local folder "mysql_data" contains the MariaDB data
+      - ./mysql_data:/var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: password
+    ports:
+      # Maps the internal port 3306 to localhost:8002
+      - 8002:3306
+
+  # PhpMyAdmin
+  phpmyadmin:
+    depends_on:
+       - db
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: pswd
+    ports:
+      # Maps the internal port 80 to localhost:8001
+      - 8001:80
