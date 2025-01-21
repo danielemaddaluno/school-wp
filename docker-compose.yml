@@ -3,7 +3,7 @@ version: "3"
 services:
   # The apache server
   web:
-    image: webdevops/php-apache:alpine-php7
+    image: webdevops/php-apache:8.2-alpine
     ports:
       # Maps the internal port 80 to localhost:8000
       - 8000:80
