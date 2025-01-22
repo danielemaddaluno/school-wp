@@ -64,8 +64,14 @@ This script sets up multiple WordPress sites, configures them with their respect
 
 ## 3. Mapping the services with ngrok
 ```
+brew install ngrok
+ngrok config add-authtoken <TOKEN>
+```
+See https://ngrok.com/docs/getting-started/ for more
+
+```
 ngrok http --host-header=rewrite http://localhost:8000
 ```
 
 This commands allows you to use ngrok with Wordpress.<br>
-To make ngrok work properly with the latest Wordpress installation, you only need to tell ngrok to rewrite the host header and point to the port of your Wordpress install (for more read this [link](https://ngrok.com/docs/using-ngrok-with/wordpress/)).
+To make ngrok work properly with the latest Wordpress installation, you only need to tell ngrok to rewrite the host header and point to the port of your Wordpress install (for more read these: [link1](https://dashboard.ngrok.com/) and [link2](https://ngrok.com/docs/using-ngrok-with/wordpress/)).

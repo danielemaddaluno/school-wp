@@ -59,7 +59,6 @@ def setup_sites(num_sites, wordpress_source, htdocs_path):
         if os.path.exists(config_file):
             with open(config_file, "r") as file:
                 config_content = file.read()
-            #config_content = config_content.replace("localhost", "db")
             config_content = config_content.replace("localhost", "db")
             config_content = config_content.replace("username_here", "root")
             config_content = config_content.replace("password_here", "password")
