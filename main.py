@@ -59,6 +59,12 @@ def setup_sites(num_sites, wordpress_source, htdocs_path):
         if os.path.exists(config_file):
             with open(config_file, "r") as file:
                 config_content = file.read()
+
+            SNIPPET = f"""<?php
+define('WP_SITEURL', 'http://' . $_SERVER['HTTP_HOST']);
+define('WP_HOME', 'http://' . $_SERVER['HTTP_HOST']);
+"""
+            config_content = config_content.replace("<?php", SNIPPET)
             config_content = config_content.replace("localhost", "db")
             config_content = config_content.replace("username_here", "root")
             config_content = config_content.replace("password_here", "password")
