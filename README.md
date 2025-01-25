@@ -73,7 +73,7 @@ This Python script automates the setup of multiple WordPress sites, performing t
 This script sets up multiple WordPress sites, configures them with their respective databases, and modifies their configuration files accordingly.
 
 ## 3. Port Forwarding
-To make your WordPress sites accessible externally, configure your router to forward port `8000` to the local PC running the Docker container. 
+To make your WordPress sites accessible externally, configure your router to forward port `xyzw` to the local PC running the Docker container. 
 
 ### Steps:
 1. Log in to your router's administration panel.
@@ -84,7 +84,7 @@ To make your WordPress sites accessible externally, configure your router to for
     - External Port: `xyzw`
 4. Save the rule.
 
-After setting up port forwarding, you can access your WordPress sites using your public IP address or domain, appending `:8000` to the URL.
+After setting up port forwarding, you can access your WordPress sites using your public IP address or domain, appending `:xyzw` to the URL.
 
 Example:
 ```
