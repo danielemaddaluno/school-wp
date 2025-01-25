@@ -39,7 +39,27 @@ def extract_zip(source, destination):
     with zipfile.ZipFile(source, "r") as zip_ref:
         zip_ref.extractall(destination)
 
-def setup_sites(num_sites, wordpress_source, htdocs_path):
+def unzip_and_prepare(source_path):
+    extracted_folders = []
+    for file in os.listdir(source_path):
+        if file.endswith(".zip"):
+            file_path = os.path.join(source_path, file)
+            with zipfile.ZipFile(file_path, 'r') as zip_ref:
+                zip_ref.extractall(source_path)
+
+    for item in os.listdir(source_path):
+        item_path = os.path.join(source_path, item)
+        if os.path.isdir(item_path):
+            extracted_folders.append(item_path)
+
+    return extracted_folders
+
+def remove_extracted_folders(folders):
+    for folder in folders:
+        if os.path.isdir(folder):
+            os.system(f"rm -rf {folder}")
+
+def setup_sites(num_sites, wordpress_source, htdocs_path, plugins_list, themes_list):
     wordpress_folder = os.path.join(wordpress_source, "wordpress")
     for i in range(1, num_sites + 1):
         site_folder = os.path.join(htdocs_path, f"site{i}")
@@ -71,6 +91,17 @@ def setup_sites(num_sites, wordpress_source, htdocs_path):
 
             os.rename(config_file, os.path.join(site_folder, "wp-config.php"))
 
+            # Copy plugins and themes
+            plugins_target = os.path.join(site_folder, "wp-content", "plugins")
+            os.makedirs(plugins_target, exist_ok=True)
+            for plugin in plugins_list:
+                os.system(f"cp -r {plugin} {plugins_target}")
+
+            themes_target = os.path.join(site_folder, "wp-content", "themes")
+            os.makedirs(themes_target, exist_ok=True)
+            for theme in themes_list:
+                os.system(f"cp -r {theme} {themes_target}")
+
 if __name__ == "__main__":
     num_sites = int(input("Enter the number of WordPress sites to create: "))
 
@@ -86,12 +117,21 @@ if __name__ == "__main__":
     os.makedirs(extract_path, exist_ok=True)
     extract_zip(wordpress_zip, extract_path)
 
-    # Step 4: Setup sites
+    # Step 4: Handle plugins and themes
+    plugins_source = "wp-content/plugins"
+    themes_source = "wp-content/themes"
+
+    plugins_list = unzip_and_prepare(plugins_source)
+    themes_list = unzip_and_prepare(themes_source)
+
+    # Step 5: Setup sites
     htdocs_path = "htdocs"
     os.makedirs(htdocs_path, exist_ok=True)
-    setup_sites(num_sites, extract_path, htdocs_path)
+    setup_sites(num_sites, extract_path, htdocs_path, plugins_list, themes_list)
 
     # Cleanup
+    remove_extracted_folders(plugins_list)
+    remove_extracted_folders(themes_list)
     os.remove(wordpress_zip)
     os.system(f"rm -rf {extract_path}")
 
