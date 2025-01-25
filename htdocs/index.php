@@ -33,13 +33,15 @@ if ($result) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School School WordPress Sites Overview</title>
+    <title>School Wordpress Playground</title>
+    <!-- Link to the favicon -->
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <h1 class="mt-5">School WordPress Sites Overview</h1>
+        <h1 class="mt-5">School Wordpress Playground - Sites Overview</h1>
         <p>Below is the status of each WordPress site:</p>
 
         <table class="table table-bordered">
