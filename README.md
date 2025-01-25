@@ -1,12 +1,12 @@
+
 # school-wp
-School Wordpress Playground
+School WordPress Playground
 
 Simply execute in order the following commands:
 
 ```
 docker compose up
 python3 main.py
-ngrok http --host-header=rewrite http://localhost:8000
 ```
 
 Read below for a comment on each command.
@@ -29,49 +29,90 @@ This setup allows you to run a PHP web application with a MariaDB backend, easil
 ```
 python3 main.py
 ```
-This python script in order:
+This Python script automates the setup of multiple WordPress sites, performing the following steps:
 
-1. Takes a User Input:
-    - The script asks the user how many WordPress sites to create (`num_sites`).
+### 1. User Input
+   - The script prompts the user for the number of WordPress sites to create (`num_sites`).
 
+### 2. Database Creation
+   - It creates `num_sites` databases under MariaDB, naming them sequentially as `site1`, `site2`, `site3`, etc.
 
-2. Database Creation:
-    - It creates `num_sites` number of databases under MariaDB, named sequentially as `site1`, `site2`, `site3`, etc.
+### 3. Download WordPress
+   - The script downloads the latest WordPress version from [WordPress.org](https://wordpress.org/latest.zip).
+   - It displays a progress bar while downloading the file.
 
-3. Download WordPress:
-   - The script downloads the latest WordPress version zip from "https://wordpress.org/latest.zip."
-   - It shows a progress bar while downloading the file.
+### 4. Unzip WordPress
+   - After downloading, the script unzips the WordPress archive and extracts the `wordpress` folder.
 
-4. Unzip WordPress
-   - The script unzips the downloaded WordPress file and extracts the `wordpress` folder.
+### 5. Copy WordPress Files
+   - It copies the contents of the `wordpress` folder `num_sites` times, creating a separate directory for each site under `/htdocs/site1`, `/htdocs/site2`, `/htdocs/site3`, etc.
 
-5. Copy WordPress Files
-   - It copies the contents of the `wordpress` folder `num_sites` times, placing them into respective directories under `/htdocs/site1`, `/htdocs/site2`, `/htdocs/site3`, etc.
+### 6. Modify Configuration
+   - In each folder, the script modifies the `wp-config-sample.php` file by replacing:
+     - `username_here` with `"root"`
+     - `password_here` with `"password"`
+     - `database_name_here` with the corresponding folder name (e.g., `site1`, `site2`, etc.).
 
-6. Modify Configuration
-   - In each folder, it replaces:
-     - `username_here` with "admin"
-     - `password_here` with "password"
-     - `database_name_here` with the corresponding folder name (e.g., `site1`, `site2`, etc.) in the `wp-config-sample.php` file.
+### 7. Rename Configuration
+   - The script renames the modified `wp-config-sample.php` file to `wp-config.php` after making the necessary changes.
 
-7. Rename Configuration
-   - It renames each `wp-config-sample.php` file to `wp-config.php` after the modifications.
+### 8. Auto Plugins
+   - The script automatically copies any specified plugins (in ZIP format) into each site's `wp-content/plugins` directory.
+     - Example plugin ZIP files to be copied:
+       - `example-plugin.zip`
+       - `another-plugin.zip`
+
+### 9. Auto Themes
+   - The script automatically copies any specified themes (in ZIP format) into each site's `wp-content/themes` directory.
+     - Example theme ZIP files to be copied:
+       - `example-theme.zip`
+       - `another-theme.zip`
 
 ---
 
 This script sets up multiple WordPress sites, configures them with their respective databases, and modifies their configuration files accordingly.
 
+## 3. Port Forwarding
+To make your WordPress sites accessible externally, configure your router to forward port `8000` to the local PC running the Docker container. 
 
-## 3. Mapping the services with ngrok
-```
-brew install ngrok
-ngrok config add-authtoken <TOKEN>
-```
-See https://ngrok.com/docs/getting-started/ for more
+### Steps:
+1. Log in to your router's administration panel.
+2. Locate the "Port Forwarding" section (this may vary depending on the router).
+3. Create a new port forwarding rule:
+    - Internal IP: The IP address of the PC running the container
+    - Internal Port: `8000`
+    - External Port: `xyzw`
+4. Save the rule.
 
+After setting up port forwarding, you can access your WordPress sites using your public IP address or domain, appending `:8000` to the URL.
+
+Example:
 ```
-ngrok http --host-header=rewrite http://localhost:8000
+http://<your-public-ip>:xyzw
 ```
 
-This commands allows you to use ngrok with Wordpress.<br>
-To make ngrok work properly with the latest Wordpress installation, you only need to tell ngrok to rewrite the host header and point to the port of your Wordpress install (for more read these: [link1](https://dashboard.ngrok.com/) and [link2](https://ngrok.com/docs/using-ngrok-with/wordpress/)).
+
+## 4. Clean
+
+The `clean.py` script is used to remove all the WordPress sites and their associated databases that were created by the setup automation script. This is useful for cleaning up your environment when the sites are no longer needed.
+
+### What the script does:
+
+1. **Delete Site Folders**:
+   - The script deletes all WordPress site folders that start with the prefix `site` in the `htdocs` directory.
+   - It uses the `os` module to iterate through the folders in the `htdocs` directory and removes any folder named `site1`, `site2`, etc., by calling `rm -rf` on them.
+
+2. **Delete Site Databases**:
+   - The script connects to a MariaDB server using `mysql.connector`.
+   - It retrieves all the databases and drops those that start with the prefix `site`, effectively deleting all the databases associated with the sites.
+   - It performs a `DROP DATABASE` operation for each identified site database.
+
+### Execution Flow:
+
+- The script first deletes all the site folders located in the `htdocs` directory.
+- Then, it proceeds to remove all databases named `site1`, `site2`, etc., from the MariaDB server.
+- After the execution, all site folders and databases are completely removed from your system.
+
+This script ensures that your environment is cleaned up and free of any previously created sites and their data.
+
+
