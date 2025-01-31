@@ -2,16 +2,37 @@
 # school-wp
 School WordPress Playground
 
-Simply execute in order the following commands:
+## Fast configuration:
+Add the zip required as installed themes and plugins (installed but not activated) inside of the specific folder that you'll find under `./wp-content`.
 
 ```
-docker compose up
-python3 main.py
+.
+├── LICENSE                  ------> Specifies the terms under which the project can be used or modified.
+├── README.md                ------> Provides detailed documentation and instructions for the project setup.
+├── clean.py                 ------> A script for cleaning up temporary or unneeded files/folders in the project.
+├── docker-compose.yml       ------> Defines and configures the Docker services (web, db, phpmyadmin) for the project.
+├── htdocs                   ------> The folder containing web-accessible files for the WordPress sites.
+│   ├── favicon.ico          ------> A small icon displayed in the browser tab for the site.
+│   ├── index.php            ------> A basic PHP entry point file for the site.
+│   └── phpinfo.php          ------> A PHP script displaying server and PHP configuration details.
+├── main.py                  ------> The main Python script for automating WordPress setup and database configuration.
+├── mysql_data               ------> Stores the MariaDB database data persistently for the project.
+├── requirements.txt         ------> Lists Python dependencies needed to run the scripts in the project.
+└── wp-content               ------> Directory for WordPress content such as plugins and themes.
+    ├── plugins              ------> Stores WordPress plugins to extend site functionality.
+    └── themes               ------> Stores WordPress themes to define the visual appearance of the site.
 ```
 
-Read below for a comment on each command.
+Then simply execute in order the following commands:
+```
+docker compose up           ------> Starts all services defined in docker-compose.yml for the project.
+python3 main.py             ------> You need to pip install requirements.py first (I suggest to run it throught PyCharm)
+```
 
-## 1. Docker Compose 
+
+Read below for a complete comment on each command.
+
+### 1. Docker Compose 
 ```
 docker compose up
 ```
@@ -25,44 +46,44 @@ This is a Docker Compose configuration that sets up a simple environment with th
 
 This setup allows you to run a PHP web application with a MariaDB backend, easily accessible and manageable via PhpMyAdmin.
 
-## 2. Db and htdocs configurations
+### 2. Db and htdocs configurations
 ```
 python3 main.py
 ```
 This Python script automates the setup of multiple WordPress sites, performing the following steps:
 
-### 1. User Input
+#### 1. User Input
    - The script prompts the user for the number of WordPress sites to create (`num_sites`).
 
-### 2. Database Creation
+#### 2. Database Creation
    - It creates `num_sites` databases under MariaDB, naming them sequentially as `site1`, `site2`, `site3`, etc.
 
-### 3. Download WordPress
+#### 3. Download WordPress
    - The script downloads the latest WordPress version from [WordPress.org](https://wordpress.org/latest.zip).
    - It displays a progress bar while downloading the file.
 
-### 4. Unzip WordPress
+#### 4. Unzip WordPress
    - After downloading, the script unzips the WordPress archive and extracts the `wordpress` folder.
 
-### 5. Copy WordPress Files
+#### 5. Copy WordPress Files
    - It copies the contents of the `wordpress` folder `num_sites` times, creating a separate directory for each site under `/htdocs/site1`, `/htdocs/site2`, `/htdocs/site3`, etc.
 
-### 6. Modify Configuration
+#### 6. Modify Configuration
    - In each folder, the script modifies the `wp-config-sample.php` file by replacing:
      - `username_here` with `"root"`
      - `password_here` with `"password"`
      - `database_name_here` with the corresponding folder name (e.g., `site1`, `site2`, etc.).
 
-### 7. Rename Configuration
+#### 7. Rename Configuration
    - The script renames the modified `wp-config-sample.php` file to `wp-config.php` after making the necessary changes.
 
-### 8. Auto Plugins
+#### 8. Auto Plugins
    - The script automatically copies any specified plugins (in ZIP format) into each site's `wp-content/plugins` directory.
      - Example plugin ZIP files to be copied:
        - `example-plugin.zip`
        - `another-plugin.zip`
 
-### 9. Auto Themes
+#### 9. Auto Themes
    - The script automatically copies any specified themes (in ZIP format) into each site's `wp-content/themes` directory.
      - Example theme ZIP files to be copied:
        - `example-theme.zip`
@@ -72,10 +93,10 @@ This Python script automates the setup of multiple WordPress sites, performing t
 
 This script sets up multiple WordPress sites, configures them with their respective databases, and modifies their configuration files accordingly.
 
-## 3. Port Forwarding
+### 3. Port Forwarding
 To make your WordPress sites accessible externally, configure your router to forward port `xyzw` to the local PC running the Docker container. 
 
-### Steps:
+#### Steps:
 1. Log in to your router's administration panel.
 2. Locate the "Port Forwarding" section (this may vary depending on the router).
 3. Create a new port forwarding rule:
@@ -92,11 +113,11 @@ http://<your-public-ip>:xyzw
 ```
 
 
-## 4. Clean
+### 4. Clean
 
 The `clean.py` script is used to remove all the WordPress sites and their associated databases that were created by the setup automation script. This is useful for cleaning up your environment when the sites are no longer needed.
 
-### What the script does:
+#### What the script does:
 
 1. **Delete Site Folders**:
    - The script deletes all WordPress site folders that start with the prefix `site` in the `htdocs` directory.
