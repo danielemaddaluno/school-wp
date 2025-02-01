@@ -26,7 +26,7 @@ if ($result) {
     }
 }
 
-// Create the table HTML
+$conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,6 +49,7 @@ if ($result) {
                 <tr>
                     <th>Site</th>
                     <th>Status</th>
+                    <th>WordPress</th>
                 </tr>
             </thead>
             <tbody>
@@ -58,34 +59,29 @@ if ($result) {
                 for ($i = 1; $i <= $maxSites; $i++) {
                     $siteName = "site" . $i;
                     $siteUrl = "$siteName/";
-
-                    // Check if the folder and the database exist
                     $folderExists = in_array($siteName, $siteFolders);
                     $dbExists = in_array($siteName, $siteDatabases);
+                    $dbConnectionStatus = false;
+                    $wpInstalled = false;
 
-                    // Check database connection
                     if ($folderExists && $dbExists) {
                         $dbConnection = new mysqli($host, $user, $password, $siteName);
-                        $dbConnectionStatus = $dbConnection->connect_error ? false : true;
+                        if (!$dbConnection->connect_error) {
+                            $dbConnectionStatus = true;
+                            $tablesResult = $dbConnection->query("SHOW TABLES");
+                            if ($tablesResult && $tablesResult->num_rows > 0) {
+                                $wpInstalled = true;
+                            }
+                        }
                         $dbConnection->close();
-                    } else {
-                        $dbConnectionStatus = false;
                     }
 
-                    // Table row: Site link and connection status
                     echo "<tr>";
                     echo "<td><a href='$siteUrl'>$siteName</a></td>";
-                    echo "<td>";
-                    if ($dbConnectionStatus) {
-                        echo "<span class='text-success'>&#10004; Database Connected</span>";
-                    } else {
-                        echo "<span class='text-danger'>&#10008; Database Not Connected</span>";
-                    }
-                    echo "</td>";
+                    echo "<td>" . ($dbConnectionStatus ? "<span class='text-success'>&#10004; Database Connected</span>" : "<span class='text-danger'>&#10008; Database Not Connected</span>") . "</td>";
+                    echo "<td>" . ($wpInstalled ? "<span class='text-success'>&#10004; WordPress Installed</span>" : "<span class='text-warning'>&#10004; WordPress Ready</span>") . "</td>";
                     echo "</tr>";
                 }
-
-                $conn->close();
                 ?>
             </tbody>
         </table>
