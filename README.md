@@ -1,6 +1,8 @@
 
 # school-wp
-School WordPress Playground
+School WordPress Playground is a Docker-based project that sets up multiple isolated WordPress instances for educational purposes.<br>
+It automatically creates site directories and databases (site1, site2, etc.), providing an overview of their status via a centralized dashboard.<br>
+The dashboard checks database connectivity and detects whether WordPress has been initialized in each instance.
 
 ## Fast configuration:
 Add the zip required as installed themes and plugins (installed but not activated) inside of the specific folder that you'll find under `./wp-content`.
